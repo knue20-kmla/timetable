@@ -1,0 +1,9 @@
+# Source spreadsheets and extracted working copies are kept local only.
+*.xlsx
+google_sheet_unpacked/
+source_check_unpacked/
+xlsx_unpacked/
+
+# Local editor and operating system files.
+.DS_Store
+Thumbs.db
