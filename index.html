@@ -60,9 +60,26 @@
       min-width: 0;
     }
 
+    .brand-home {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex: 0 0 auto;
+    }
+
+    .brand-home:focus-visible {
+      outline: 3px solid rgba(15, 118, 110, 0.24);
+      outline-offset: 3px;
+    }
+
     .school-mark {
-      width: 48px;
-      height: 48px;
+      width: 56px;
+      height: 56px;
       object-fit: contain;
       flex: 0 0 auto;
     }
@@ -671,7 +688,7 @@
       }
 
       .brand-lockup { gap: 10px; }
-      .school-mark { width: 42px; height: 42px; }
+      .school-mark { width: 48px; height: 48px; }
       h1 { font-size: 22px; }
       .subtitle { margin-top: 4px; font-size: 12px; }
       .toolbar { width: 100%; justify-content: flex-end; }
@@ -757,7 +774,7 @@
 
     @media (max-width: 420px) {
       .topbar-inner, main { width: min(100% - 12px, 1220px); }
-      .school-mark { width: 36px; height: 36px; }
+      .school-mark { width: 42px; height: 42px; }
       h1 { font-size: 19px; }
       .subtitle { font-size: 11px; }
       .button.icon-only { width: 34px; min-height: 34px; }
@@ -814,8 +831,8 @@
       }
 
       .school-mark {
-        width: 38px;
-        height: 38px;
+        width: 44px;
+        height: 44px;
       }
 
       h1 {
@@ -922,13 +939,18 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand-lockup">
-        <img class="school-mark" src="https://i.imgur.com/Mo4ogKc.png" alt="학교 마크">
+        <button class="brand-home" id="brandHomeBtn" type="button" title="홈" aria-label="홈으로 이동">
+          <img class="school-mark" src="https://i.imgur.com/Mo4ogKc.png" alt="학교 마크">
+        </button>
         <div class="brand-copy">
           <h1 id="title">2026-2학기 교사 시간표</h1>
           <p class="subtitle" id="subtitle">Google Sheet 원본/수강현황 기준</p>
         </div>
       </div>
       <div class="toolbar">
+        <button class="button icon-only" id="homeBtn" type="button" title="홈" aria-label="홈">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        </button>
         <button class="button icon-only" id="refreshBtn" type="button" title="새로고침" aria-label="새로고침">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-9 9 9.4 9.4 0 0 1-6.4-2.6"/><path d="M3 12a9 9 0 0 1 9-9 9.4 9.4 0 0 1 6.4 2.6"/><path d="M3 18h5v-5"/><path d="M21 6h-5v5"/></svg>
         </button>
@@ -1041,6 +1063,8 @@
     const els = {
       title: document.getElementById("title"),
       subtitle: document.getElementById("subtitle"),
+      brandHomeBtn: document.getElementById("brandHomeBtn"),
+      homeBtn: document.getElementById("homeBtn"),
       refreshBtn: document.getElementById("refreshBtn"),
       printBtn: document.getElementById("printBtn"),
       teacherSearchInput: document.getElementById("teacherSearchInput"),
@@ -1556,6 +1580,22 @@
       render();
     }
 
+    function goHome() {
+      state.selectedTeacher = "";
+      els.teacherSearchInput.value = "";
+      els.searchInput.value = "";
+      els.dayFilter.value = "";
+      els.periodFilter.value = "";
+      const today = new Date();
+      state.selectedDate = today;
+      state.calendarMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      updateTeacherOptions();
+      renderCalendar();
+      render();
+      setCalendarCollapsed(true);
+      closeStudentModal();
+    }
+
     function renderCalendar() {
       const year = state.calendarMonth.getFullYear();
       const month = state.calendarMonth.getMonth();
@@ -1784,6 +1824,8 @@
     els.searchInput.addEventListener("input", render);
     els.dayFilter.addEventListener("change", render);
     els.periodFilter.addEventListener("change", render);
+    els.brandHomeBtn.addEventListener("click", goHome);
+    els.homeBtn.addEventListener("click", goHome);
     els.refreshBtn.addEventListener("click", loadData);
     els.printBtn.addEventListener("click", () => window.print());
     els.calendarGrid.addEventListener("click", (event) => {
