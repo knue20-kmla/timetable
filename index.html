@@ -779,10 +779,142 @@
     }
 
     @media print {
-      body { background: #fff; }
-      .topbar, .controls, .calendar-panel, .status, .mobile-list, .modal-backdrop { display: none !important; }
-      main { width: 100%; margin: 0; }
-      .table-wrap { box-shadow: none; }
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      .topbar {
+        display: block !important;
+        position: static;
+        border-bottom: 1px solid #cbd5e1;
+        background: #fff;
+        backdrop-filter: none;
+      }
+
+      .topbar-inner {
+        width: 100%;
+        min-height: 0;
+        padding: 0 0 8px;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .brand-lockup {
+        gap: 10px;
+      }
+
+      .school-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .subtitle {
+        margin-top: 3px;
+        font-size: 12px;
+      }
+
+      .toolbar, .controls, .calendar-panel, .status, .mobile-list, .modal-backdrop {
+        display: none !important;
+      }
+
+      main {
+        width: 100%;
+        margin: 10px 0 0;
+        display: block;
+      }
+
+      .table-wrap {
+        overflow: visible;
+        border: 1px solid #cbd5e1;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .table-wrap::after {
+        display: none;
+      }
+
+      table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+      }
+
+      th {
+        height: 34px;
+        background: #f1f5f9;
+        color: #334155;
+        font-size: 12px;
+        box-shadow: none;
+      }
+
+      th.selected-day {
+        background: #f1f5f9;
+        color: #334155;
+        box-shadow: none;
+      }
+
+      .period {
+        width: 42px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      .slot,
+      td.selected-day {
+        min-height: 0;
+        height: 76px;
+        padding: 5px;
+        background: #fff;
+        box-shadow: none;
+      }
+
+      .lesson,
+      td.selected-day .lesson:not(.empty) {
+        min-height: 64px;
+        border: 1px solid rgba(15, 118, 110, 0.22);
+        background: #f6fffd;
+        box-shadow: none;
+      }
+
+      .lesson.empty,
+      td.selected-day .lesson.empty {
+        border-color: transparent;
+        background: transparent;
+        color: #a0acb9;
+      }
+
+      .lesson-title {
+        font-size: 12px;
+        line-height: 1.25;
+        white-space: normal;
+      }
+
+      .lesson-sub {
+        font-size: 10px;
+      }
+
+      .student-button {
+        border-color: #cbd5e1;
+        color: #334155;
+        background: #fff;
+        font-size: 10px;
+      }
     }
   </style>
 </head>
