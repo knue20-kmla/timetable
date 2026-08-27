@@ -1433,7 +1433,7 @@
       const todayKey = dateKey(new Date());
       const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
-      els.calendarTitle.textContent = `${year}년 ${month + 1}월`;
+      els.calendarTitle.textContent = `${state.selectedDate.getFullYear()}년 ${state.selectedDate.getMonth() + 1}월 ${state.selectedDate.getDate()}일`;
       els.calendarGrid.innerHTML = weekdays.map((day, index) => `<div class="calendar-weekday ${index === 0 ? "sunday" : ""}">${day}</div>`).join("");
 
       for (let index = 0; index < 42; index += 1) {
@@ -1468,30 +1468,24 @@
       if (!teachers.length) {
         els.teacherSelect.innerHTML = `<option value="">검색 결과 없음</option>`;
         state.selectedTeacher = "";
+        els.teacherSelect.value = "";
         return false;
       }
 
-      els.teacherSelect.innerHTML = teachers
+      els.teacherSelect.innerHTML = `<option value="">교사 선택</option>` + teachers
         .map((item) => `<option value="${escapeHtml(item.teacher)}">${escapeHtml(item.teacher)}</option>`)
         .join("");
 
-      const exact = query ? teachers.find((item) => item.teacher === query) : null;
-      const preferred = exact
-        || teachers.find((item) => item.teacher === state.selectedTeacher)
-        || (teachers.length === 1 ? teachers[0] : null)
-        || teachers[0];
+      const selectedExists = teachers.some((item) => item.teacher === state.selectedTeacher);
+      if (!selectedExists) state.selectedTeacher = "";
 
-      state.selectedTeacher = preferred.teacher;
       els.teacherSelect.value = state.selectedTeacher;
-      return true;
+      return selectedExists;
     }
 
     function populateControls() {
       const currentTeacher = state.selectedTeacher;
-      const preferred = state.teachers.find((item) => item.teacher === currentTeacher)
-        || state.teachers.find((item) => item.teacher === "김태완")
-        || state.teachers[0];
-
+      const preferred = state.teachers.find((item) => item.teacher === currentTeacher);
       state.selectedTeacher = preferred?.teacher || "";
       updateTeacherOptions();
 
@@ -1584,7 +1578,7 @@
       const activeDay = selectedScheduleDay();
       if (!teacher) {
         els.title.textContent = "교사 시간표";
-        els.subtitle.textContent = "검색 결과가 없습니다.";
+        els.subtitle.textContent = "교사를 선택하면 시간표가 표시됩니다.";
         els.tableHead.innerHTML = `<tr><th class="period">교시</th>${DAYS.map((day) => `<th class="${day === activeDay ? "selected-day" : ""}">${day}요일</th>`).join("")}</tr>`;
         els.tableBody.innerHTML = PERIODS.map((period) => {
           return `<tr><td class="period">${period}</td>${DAYS.map((day) => `<td class="slot${day === activeDay ? " selected-day" : ""}"><div class="lesson empty">-</div></td>`).join("")}</tr>`;
