@@ -26,3 +26,14 @@ Google Sheet의 `원본(818)`과 `수강현황(818)` 탭을 읽어 교사별 시
 원본 Google Sheet:
 
 `https://docs.google.com/spreadsheets/d/1T1Dh0cqo3UwC_pkLpGBAVE5wIjJbOV8NMEWbCQ78qps/edit?usp=sharing`
+
+## 휴대폰 설치
+
+이 앱은 PWA로 설정되어 있어 기존 웹 주소를 그대로 사용하면서 휴대폰 홈 화면에 설치할 수 있습니다.
+
+- iPhone: Safari에서 배포 주소를 연 뒤 공유 버튼을 누르고 `홈 화면에 추가`를 선택합니다.
+- Android: Chrome에서 배포 주소를 연 뒤 메뉴에서 `앱 설치` 또는 `홈 화면에 추가`를 선택합니다.
+
+배포 주소:
+
+`https://knue20-kmla.github.io/timetable/`
