@@ -307,6 +307,7 @@
 
     .student-count {
       width: fit-content;
+      white-space: nowrap;
       border: 1px solid rgba(15, 118, 110, 0.25);
       border-radius: 6px;
       background: #fff;
@@ -379,20 +380,6 @@
       gap: 7px;
     }
 
-    .weekday-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: fit-content;
-      min-height: 24px;
-      border-radius: 999px;
-      padding: 0 9px;
-      background: #fff;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 850;
-    }
-
     .timetable-main {
       padding: 12px 14px;
       display: grid;
@@ -431,9 +418,11 @@
     }
 
     .timetable-side-label {
+      width: 100%;
       color: var(--accent);
       font-size: 12px;
       font-weight: 900;
+      text-align: center;
     }
 
     .empty-state {
@@ -1471,14 +1460,13 @@
               <button class="timetable-row ${active ? "active" : ""} ${total ? "" : "empty"}" type="button" data-session-key="${escapeHtml(session.key)}">
                 <div class="timetable-period">
                   <span class="period-badge">${escapeHtml(session.period)}교시</span>
-                  <span class="weekday-pill">${escapeHtml(session.dayName)}요일</span>
                 </div>
                 <div class="timetable-main">
                   <div class="timetable-title">${escapeHtml(session.lessons.map((lesson) => lesson.text).join(" · ") || session.raw)}</div>
                   <div class="timetable-sub">${escapeHtml(session.label)} · ${state.teacher.teacher}</div>
                 </div>
                 <div class="timetable-side">
-                  ${total ? `<span class="student-count">수강생 ${total}명 보기</span><span class="timetable-side-label">${marked ? `출결 ${marked}명 기록` : "출결 미입력"}</span>` : `<span class="session-meta">수강생 명단 없음</span>`}
+                  ${total ? `<span class="student-count">수강생 ${total}명</span><span class="timetable-side-label">${marked ? `출결 ${marked}명 기록` : "출결 미입력"}</span>` : `<span class="session-meta">수강생 명단 없음</span>`}
                 </div>
               </button>
             `;
