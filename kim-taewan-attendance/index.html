@@ -1436,21 +1436,7 @@
       }
 
       els.timetableBody.innerHTML = `
-        <div class="date-band">
-          <div>
-            <div class="date-label">${formatDate(state.selectedDate)}</div>
-            <div class="date-sub">${weekday}요일 · ${sessions.length}개 수업</div>
-          </div>
-          <div class="actions">
-            <button class="button" id="openStudentReportBtn" type="button">학생별 출결 조회</button>
-          </div>
-        </div>
         <div class="timetable-grid">
-          <div class="timetable-grid-head">
-            <span>교시</span>
-            <span>수업</span>
-            <span>수강생</span>
-          </div>
           ${sessions.map((session) => {
             const groups = sessionGroups(session);
             const total = groups.reduce((sum, group) => sum + group.students.length, 0);
