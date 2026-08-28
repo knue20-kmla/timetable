@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="김태완 출결부">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="https://i.imgur.com/Mo4ogKc.png">
+  <title>김태완 교사 출결부</title>
+  <style>
+    :root {
+      --bg: #f4f7f9;
+      --panel: #fff;
+      --line: #d9e2e8;
+      --text: #17212b;
+      --muted: #667789;
+      --accent: #0f766e;
+      --accent-soft: #e7f6f3;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --danger: #be123c;
+      --shadow: 0 16px 40px rgba(22, 35, 50, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #fbfcfd 0, var(--bg) 260px);
+      color: var(--text);
+      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(217, 226, 232, 0.92);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+    }
+    .topbar-inner, main {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .topbar-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .school-mark {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      margin-bottom: 5px;
+      font-size: clamp(21px, 3vw, 30px);
+      line-height: 1.1;
+      font-weight: 900;
+    }
+    .subtitle {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .toolbar, .actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 11px;
+      background: #fff;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-weight: 850;
+    }
+    .button:hover { border-color: #97a8b8; background: #f8fafc; }
+    .button.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .button.primary:hover { background: #155e75; }
+    .button.icon-only { width: 38px; padding: 0; }
+    .icon {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+    main {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+      margin-bottom: 38px;
+    }
+    .notice {
+      border: 1px solid #c9e5e0;
+      border-radius: 7px;
+      padding: 10px 12px;
+      background: var(--accent-soft);
+      color: #16645e;
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .notice.error {
+      border-color: #fecdd3;
+      background: #fff1f2;
+      color: var(--danger);
+    }
+    .control-panel, .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .control-panel {
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 175px minmax(240px, 1fr) auto;
+      gap: 9px;
+      align-items: center;
+    }
+    .field {
+      height: 44px;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 10px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .field:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+    .field input, .field select {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+    }
+    .panel-head {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .panel-head h2 {
+      margin-bottom: 4px;
+      font-size: 19px;
+      line-height: 1.2;
+    }
+    .panel-head p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .attendance-body { padding: 14px 16px 18px; }
+    .attendance-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .summary-item {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 9px 10px;
+      background: #f8fafc;
+    }
+    .summary-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .summary-item strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .student-groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .student-group {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .student-group h3 {
+      margin: 0;
+      padding: 9px 11px;
+      background: #f8fafc;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+    .student-row {
+      min-height: 49px;
+      border-top: 1px solid var(--line);
+      padding: 7px 10px;
+      display: grid;
+      grid-template-columns: minmax(80px, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .student-name {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-weight: 800;
+    }
+    .status-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+    .status-button {
+      min-width: 43px;
+      min-height: 29px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 0 5px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .status-button:hover { border-color: var(--accent); color: var(--accent); }
+    .status-button.active.present { border-color: #16a34a; background: #dcfce7; color: #166534; }
+    .status-button.active.late { border-color: #d97706; background: #fef3c7; color: #92400e; }
+    .status-button.active.absent { border-color: #e11d48; background: #ffe4e6; color: #9f1239; }
+    .status-button.active.leave { border-color: #7c3aed; background: #ede9fe; color: #5b21b6; }
+    .empty-state {
+      padding: 36px 12px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 800;
+    }
+    .report-grid {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px 16px 18px;
+    }
+    .report-filter {
+      display: grid;
+      align-content: start;
+      gap: 9px;
+    }
+    .report-filter label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .report-filter input, .report-filter select {
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 9px;
+      outline: 0;
+      background: #fff;
+      color: var(--text);
+    }
+    .report-filter input:focus, .report-filter select:focus { border-color: var(--accent); }
+    .report-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+    .report-stat {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 9px;
+      background: #f8fafc;
+    }
+    .report-stat span { display: block; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .report-stat strong { display: block; margin-top: 3px; font-size: 19px; }
+    .report-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 7px; }
+    .report-table { width: 100%; border-collapse: collapse; min-width: 440px; }
+    .report-table th, .report-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+      font-size: 12px;
+    }
+    .report-table th { background: #f8fafc; color: var(--muted); font-weight: 850; }
+    .report-table tr:last-child td { border-bottom: 0; }
+    .status-text { font-weight: 850; }
+    .status-text.present { color: #15803d; }
+    .status-text.late { color: #b45309; }
+    .status-text.absent { color: #be123c; }
+    .status-text.leave { color: #6d28d9; }
+    .status-text.pending { color: var(--muted); }
+    .loading {
+      min-height: 100px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    @media (max-width: 820px) {
+      .topbar-inner, main { width: min(100% - 20px, 1160px); }
+      .topbar-inner { align-items: flex-start; flex-direction: column; padding: 10px 0; }
+      .school-mark { width: 46px; height: 46px; }
+      h1 { font-size: 22px; }
+      .toolbar { width: 100%; justify-content: flex-end; }
+      main { margin-top: 10px; gap: 10px; }
+      .control-panel { grid-template-columns: 1fr; }
+      .student-groups { grid-template-columns: 1fr; }
+      .report-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .topbar-inner, main { width: min(100% - 12px, 1160px); }
+      .brand { gap: 9px; }
+      .school-mark { width: 40px; height: 40px; }
+      h1 { font-size: 19px; }
+      .subtitle { font-size: 11px; }
+      .button { min-height: 35px; font-size: 12px; }
+      .button.icon-only { width: 35px; }
+      .panel-head { padding: 12px; }
+      .panel-head h2 { font-size: 16px; }
+      .panel-head .actions { justify-content: flex-end; }
+      .attendance-body { padding: 10px 12px 14px; }
+      .attendance-summary, .report-stats { gap: 5px; }
+      .summary-item, .report-stat { padding: 7px 6px; }
+      .summary-item strong, .report-stat strong { font-size: 16px; }
+      .student-row { grid-template-columns: 1fr; gap: 5px; padding: 8px 9px; }
+      .status-buttons { justify-content: flex-start; }
+      .status-button { min-width: 48px; }
+      .report-grid { padding: 10px 12px 14px; }
+    }
+    @media print {
+      @page { size: A4 portrait; margin: 10mm; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body { background: #fff; }
+      .topbar { position: static; background: #fff; border-bottom: 1px solid #cbd5e1; }
+      .topbar-inner { width: 100%; min-height: 0; padding: 0 0 8px; flex-direction: row; }
+      .school-mark { width: 42px; height: 42px; }
+      h1 { font-size: 21px; }
+      .subtitle { font-size: 11px; }
+      .toolbar, .notice, .control-panel, .report-panel, .panel-head .actions { display: none !important; }
+      main { width: 100%; margin: 10px 0 0; display: block; }
+      .panel { border: 1px solid #cbd5e1; border-radius: 0; box-shadow: none; }
+      .panel-head { padding: 9px 10px; }
+      .panel-head h2 { font-size: 16px; }
+      .attendance-body { padding: 8px 10px 10px; }
+      .attendance-summary { margin-bottom: 8px; }
+      .summary-item { padding: 5px 7px; }
+      .summary-item strong { font-size: 15px; }
+      .student-groups { grid-template-columns: 1fr; gap: 7px; }
+      .student-group h3 { padding: 6px 8px; font-size: 12px; }
+      .student-row { min-height: 31px; padding: 4px 8px; grid-template-columns: 1fr auto; }
+      .status-buttons { gap: 2px; }
+      .status-button { min-width: 38px; min-height: 22px; padding: 0 3px; font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img class="school-mark" src="https://i.imgur.com/Mo4ogKc.png" alt="학교 마크">
+        <div>
+          <h1>김태완 교사 출결부</h1>
+          <p class="subtitle">Google Sheet 시간표·수강생 명단 연동</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <a class="button icon-only" href="../" title="시간표 조회" aria-label="시간표 조회">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        </a>
+        <button class="button icon-only" id="refreshBtn" type="button" title="새로고침" aria-label="새로고침">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-9 9 9.4 9.4 0 0 1-6.4-2.6"/><path d="M3 12a9 9 0 0 1 9-9 9.4 9.4 0 0 1 6.4 2.6"/><path d="M3 18h5v-5"/><path d="M21 6h-5v5"/></svg>
+        </button>
+        <button class="button icon-only" id="printBtn" type="button" title="출결부 인쇄" aria-label="출결부 인쇄">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="notice" id="statusBox">Google Sheet에서 김태완 교사 시간표와 수강생 명단을 불러오는 중입니다.</div>
+
+    <section class="control-panel" aria-label="출결 조회 조건">
+      <label class="field">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+        <input id="dateInput" type="date" aria-label="출결 날짜">
+      </label>
+      <label class="field">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+        <select id="sessionSelect" aria-label="수업 선택"></select>
+      </label>
+      <div class="actions">
+        <button class="button primary" id="allPresentBtn" type="button">전체 출석</button>
+        <button class="button" id="clearDayBtn" type="button">전체 초기화</button>
+        <button class="button" id="exportBtn" type="button">CSV</button>
+      </div>
+    </section>
+
+    <section class="panel attendance-panel" aria-label="일별 출결 입력">
+      <div class="panel-head">
+        <div>
+          <h2 id="attendanceTitle">일별 출결 입력</h2>
+          <p id="attendanceMeta">날짜와 수업을 선택하세요.</p>
+        </div>
+        <div class="actions">
+          <button class="button" id="prevDayBtn" type="button" title="이전 날" aria-label="이전 날">이전 날</button>
+          <button class="button" id="nextDayBtn" type="button" title="다음 날" aria-label="다음 날">다음 날</button>
+        </div>
+      </div>
+      <div class="attendance-body" id="attendanceBody">
+        <div class="loading">데이터를 불러오는 중입니다.</div>
+      </div>
+    </section>
+
+    <section class="panel report-panel" aria-label="학생별 출결 조회">
+      <div class="panel-head">
+        <div>
+          <h2>학생별 출결 조회</h2>
+          <p>이 기기에서 입력한 출결 기록을 학생별로 확인합니다.</p>
+        </div>
+      </div>
+      <div class="report-grid">
+        <div class="report-filter">
+          <label for="studentSearch">학생 검색</label>
+          <input id="studentSearch" type="search" placeholder="이름 입력" autocomplete="off">
+          <label for="studentSelect">학생 선택</label>
+          <select id="studentSelect"></select>
+        </div>
+        <div id="reportBody">
+          <div class="empty-state">학생을 선택하면 출결 이력이 표시됩니다.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SHEET_ID = "1T1Dh0cqo3UwC_pkLpGBAVE5wIjJbOV8NMEWbCQ78qps";
+    const SHEETS = { original: "원본(818)", enroll: "수강현황(818)" };
+    const ROSTER_SHEETS = ["1h", "A~H", "2M", "3M", "3V"];
+    const TEACHER = "김태완";
+    const DAYS = ["월", "화", "수", "목", "금"];
+    const DAY_STARTS = { "월": 4, "화": 12, "수": 20, "목": 28, "금": 36 };
+    const PERIODS = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    const STATUS = [
+      { key: "미입력", label: "미입력", className: "pending" },
+      { key: "출석", label: "출석", className: "present" },
+      { key: "지각", label: "지각", className: "late" },
+      { key: "결석", label: "결석", className: "absent" },
+      { key: "조퇴", label: "조퇴", className: "leave" }
+    ];
+    const FIXED_LESSONS = new Map([["월|1", "애국조회/학급회의"]]);
+    const STORAGE_KEY = "kim-taewan-attendance-v1";
+    const PLAIN_BLOCK_RE = /^[A-H]+$/;
+    const GRADE_BLOCK_RE = /^([1-3](?:,[1-3])?)\/?([A-Za-z][A-Za-z0-9]*)$/;
+
+    const state = {
+      teacher: null,
+      enroll: new Map(),
+      roster: new Map(),
+      records: loadRecords(),
+      selectedDate: dateKey(new Date()),
+      selectedSessionKey: "",
+      students: [],
+      loadedAt: null
+    };
+
+    const els = {
+      statusBox: document.getElementById("statusBox"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      printBtn: document.getElementById("printBtn"),
+      dateInput: document.getElementById("dateInput"),
+      sessionSelect: document.getElementById("sessionSelect"),
+      allPresentBtn: document.getElementById("allPresentBtn"),
+      clearDayBtn: document.getElementById("clearDayBtn"),
+      exportBtn: document.getElementById("exportBtn"),
+      prevDayBtn: document.getElementById("prevDayBtn"),
+      nextDayBtn: document.getElementById("nextDayBtn"),
+      attendanceTitle: document.getElementById("attendanceTitle"),
+      attendanceMeta: document.getElementById("attendanceMeta"),
+      attendanceBody: document.getElementById("attendanceBody"),
+      studentSearch: document.getElementById("studentSearch"),
+      studentSelect: document.getElementById("studentSelect"),
+      reportBody: document.getElementById("reportBody")
+    };
+
+    function normalize(value) {
+      return String(value ?? "").replace(/\u3000/g, " ").replace(/\r/g, "\n").trim();
+    }
+
+    function compact(value) {
+      return normalize(value).replace(/\s+/g, "");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeRegExp(value) {
+      return String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function cellValue(cell) {
+      return normalize(cell?.f ?? cell?.v ?? "");
+    }
+
+    function dateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function localDate(key) {
+      const [year, month, day] = key.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    function dayName(key) {
+      const day = localDate(key).getDay();
+      return day >= 1 && day <= 5 ? DAYS[day - 1] : "";
+    }
+
+    function formatDate(key) {
+      const date = localDate(key);
+      return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${["일", "월", "화", "수", "목", "금", "토"][date.getDay()]})`;
+    }
+
+    function loadRecords() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveRecords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.records));
+    }
+
+    function setStatus(message, error = false) {
+      els.statusBox.textContent = message;
+      els.statusBox.classList.toggle("error", error);
+    }
+
+    function gvizLoad(sheetName) {
+      return new Promise((resolve, reject) => {
+        const callback = `__gviz_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const script = document.createElement("script");
+        const tqx = `out:json;responseHandler:${callback}`;
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=${encodeURIComponent(tqx)}&sheet=${encodeURIComponent(sheetName)}&cache=${Date.now()}`;
+        window[callback] = (response) => {
+          cleanup();
+          if (response.status && response.status !== "ok") {
+            reject(new Error(response.errors?.[0]?.detailed_message || response.status));
+            return;
+          }
+          resolve(response.table);
+        };
+        const cleanup = () => {
+          delete window[callback];
+          script.remove();
+        };
+        script.onerror = () => {
+          cleanup();
+          reject(new Error(`${sheetName} 시트를 불러오지 못했습니다.`));
+        };
+        script.src = url;
+        document.head.appendChild(script);
+      });
+    }
+
+    function tableRows(table) {
+      return table.rows.map((row) => Array.from({ length: table.cols.length }, (_, index) => cellValue(row.c[index])));
+    }
+
+    function buildEnrollment(rows) {
+      const map = new Map();
+      rows.forEach((row) => {
+        const gradeCell = normalize(row[1]).replace(/\.0$/, "");
+        const subject = normalize(row[2]);
+        const blockCell = compact(row[4]);
+        const teacher = normalize(row[5]);
+        const student = normalize(row[6]);
+        const code = compact(row[8]);
+        if (!subject || !teacher) return;
+
+        let grades = "";
+        let block = blockCell;
+        const pattern = new RegExp(`^${escapeRegExp(compact(teacher))}([1-3](?:,[1-3])?|[1-3]{2,3})\\/?([A-Za-z][A-Za-z0-9]*)$`);
+        const match = code.match(pattern);
+        if (match) {
+          grades = match[1].replace(/,/g, "");
+          block = match[2];
+        } else if (/^\d+$/.test(gradeCell) && block) {
+          grades = gradeCell;
+        }
+        if (!grades || !block) return;
+
+        const key = `${teacher}|${grades}|${block.toUpperCase()}`;
+        if (!map.has(key)) map.set(key, { teacher, grades, block, subject, students: new Set() });
+        if (student) map.get(key).students.add(student);
+      });
+      return map;
+    }
+
+    function buildRosterIndex(tableMap) {
+      const index = new Map();
+      ROSTER_SHEETS.forEach((sheetName) => {
+        const rows = tableMap.get(sheetName);
+        if (!rows?.length) return;
+        rows[0].forEach((headerCell, columnIndex) => {
+          const label = compact(headerCell);
+          if (!label) return;
+          const students = [...new Set(rows.slice(1).map((row) => normalize(row[columnIndex])).filter(Boolean))];
+          index.set(`${sheetName.toLowerCase()}|${label.toLowerCase()}`, { sheetName, label, students });
+        });
+      });
+      return index;
+    }
+
+    function addRosterSection(sections, sheetName, label) {
+      const section = state.roster.get(`${sheetName.toLowerCase()}|${label.toLowerCase()}`);
+      if (section && !sections.some((item) => item.sheetName === section.sheetName && item.label.toLowerCase() === section.label.toLowerCase())) {
+        sections.push({ ...section });
+      }
+    }
+
+    function collectRosterSections(token) {
+      const cleaned = compact(token).replace(/\(.*\)$/, "");
+      const sections = [];
+      const exact = (label) => {
+        state.roster.forEach((section) => {
+          if (section.label.toLowerCase() === label.toLowerCase()) addRosterSection(sections, section.sheetName, section.label);
+        });
+      };
+      exact(cleaned);
+      if (sections.length) return sections;
+
+      if (/^1h(10|[1-9])$/i.test(cleaned)) {
+        addRosterSection(sections, "1h", `h${cleaned.replace(/^1h/i, "")}`);
+        return sections;
+      }
+      if (/^[A-H]+$/.test(cleaned)) {
+        cleaned.split("").forEach((letter) => addRosterSection(sections, "A~H", letter));
+        return sections;
+      }
+      return collectLowercaseModules(cleaned);
+    }
+
+    function collectLowercaseModules(token) {
+      const sections = [];
+      const add = (sheetName, label) => addRosterSection(sections, sheetName, label);
+      const addNumbers = (grade, kind, digits) => {
+        const sheetName = grade === "3" && kind === "v" ? "3V" : `${grade}M`;
+        let rest = digits;
+        while (rest) {
+          const two = `${grade}${kind}${rest.slice(0, 2)}`;
+          if (rest.length >= 2 && state.roster.has(`${sheetName.toLowerCase()}|${two.toLowerCase()}`)) {
+            add(sheetName, two);
+            rest = rest.slice(2);
+          } else {
+            add(sheetName, `${grade}${kind}${rest[0]}`);
+            rest = rest.slice(1);
+          }
+        }
+      };
+      const pattern = /([23])?([mv])([0-9]+)/g;
+      let currentGrade = "";
+      let match;
+      while ((match = pattern.exec(token.toLowerCase()))) {
+        if (match[1]) currentGrade = match[1];
+        if (currentGrade) addNumbers(currentGrade, match[2], match[3]);
+      }
+      return sections;
+    }
+
+    function lessonFromEnrollment(grade, block, display, raw) {
+      const found = state.enroll.get(`${TEACHER}|${grade}|${block.toUpperCase()}`);
+      const students = found ? [...found.students].sort((a, b) => a.localeCompare(b, "ko")) : [];
+      const sections = students.length ? [{ sheetName: "수강현황", label: display, students }] : [];
+      return {
+        text: found ? `${display}(${found.subject})` : display,
+        subject: found?.subject || "",
+        students,
+        sections,
+        raw
+      };
+    }
+
+    function lessonFromBlockOnly(block, raw) {
+      const candidates = [];
+      state.enroll.forEach((item) => {
+        if (item.teacher === TEACHER && item.block.toUpperCase() === block.toUpperCase()) candidates.push(item);
+      });
+      const subjects = [...new Set(candidates.map((item) => item.subject))];
+      const students = [...new Set(candidates.flatMap((item) => [...item.students]))].sort((a, b) => a.localeCompare(b, "ko"));
+      return {
+        text: subjects.length === 1 ? `${block}(${subjects[0]})` : block,
+        subject: subjects.length === 1 ? subjects[0] : "",
+        students,
+        sections: students.length ? [{ sheetName: "수강현황", label: block, students }] : [],
+        raw
+      };
+    }
+
+    function lessonFromRoster(value, raw) {
+      const sections = collectRosterSections(value);
+      const students = [...new Set(sections.flatMap((section) => section.students))];
+      return { text: value, subject: "", students, sections, raw };
+    }
+
+    function parseToken(token, raw) {
+      const value = compact(token);
+      if (!value) return [];
+      if (/^1h(10|[1-9])$/i.test(value) || PLAIN_BLOCK_RE.test(value) || /^[23][mv]\d/.test(value)) {
+        return [lessonFromRoster(value, raw)];
+      }
+      const gradeBlock = value.match(GRADE_BLOCK_RE);
+      if (gradeBlock) {
+        return [lessonFromEnrollment(gradeBlock[1].replace(/,/g, ""), gradeBlock[2], `${gradeBlock[1].replace(/,/g, "")}${gradeBlock[2]}`, raw)];
+      }
+      return [lessonFromBlockOnly(value, raw)];
+    }
+
+    function parseSlot(raw) {
+      const value = compact(raw);
+      if (!value) return [];
+      if (/애국|애조/.test(value)) return [{ text: normalize(raw), subject: "", students: [], sections: [], raw }];
+      if (GRADE_BLOCK_RE.test(value) || /^[23][mv]\d/.test(value) || /^1h(10|[1-9])$/i.test(value) || PLAIN_BLOCK_RE.test(value)) {
+        return parseToken(value, raw);
+      }
+      return value.split(/[+,]/).filter(Boolean).flatMap((token) => parseToken(token, raw));
+    }
+
+    function buildTeacher(rows) {
+      const row = rows.slice(4).find((item) => normalize(item[2]) === TEACHER);
+      if (!row) return null;
+      const cells = [];
+      DAYS.forEach((day) => {
+        PERIODS.forEach((period, index) => {
+          const fixed = FIXED_LESSONS.get(`${day}|${period}`);
+          const raw = fixed || normalize(row[DAY_STARTS[day] + index]);
+          cells.push({ day, period, raw, lessons: parseSlot(raw) });
+        });
+      });
+      return { teacher: TEACHER, office: normalize(row[3]).replace(/\n+/g, " "), cells };
+    }
+
+    function sessionsForDate(key) {
+      const day = dayName(key);
+      if (!day || !state.teacher) return [];
+      return state.teacher.cells.filter((cell) => cell.day === day && cell.raw).map((cell) => ({
+        ...cell,
+        key: `${key}|${cell.day}|${cell.period}`,
+        label: `${cell.period}교시 · ${cell.lessons.map((lesson) => lesson.text).join(" · ") || cell.raw}`
+      }));
+    }
+
+    function selectedSession() {
+      return sessionsForDate(state.selectedDate).find((session) => session.key === state.selectedSessionKey) || null;
+    }
+
+    function entriesForSession(session) {
+      if (!session) return [];
+      return session.lessons.flatMap((lesson) => {
+        const sections = lesson.sections.length ? lesson.sections : (lesson.students.length ? [{ label: lesson.text, students: lesson.students }] : []);
+        return sections.map((section) => ({
+          label: section.label,
+          students: [...new Set(section.students)].sort((a, b) => a.localeCompare(b, "ko"))
+        }));
+      }).filter((section) => section.students.length);
+    }
+
+    function recordKey(date, sessionKey, section, student) {
+      return [date, sessionKey, section, student].join("|");
+    }
+
+    function getStatus(entry, session) {
+      return state.records[recordKey(state.selectedDate, session.key, entry.label, entry.student)]?.status || "미입력";
+    }
+
+    function updateStatus(entry, session, status) {
+      const key = recordKey(state.selectedDate, session.key, entry.label, entry.student);
+      if (status === "미입력") {
+        delete state.records[key];
+      } else {
+        state.records[key] = {
+          date: state.selectedDate,
+          sessionKey: session.key,
+          sessionLabel: session.label,
+          day: session.day,
+          period: session.period,
+          section: entry.label,
+          student: entry.student,
+          status,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      saveRecords();
+      renderAttendance();
+      renderReport();
+    }
+
+    function renderSessionOptions() {
+      const sessions = sessionsForDate(state.selectedDate);
+      if (!sessions.length) {
+        els.sessionSelect.innerHTML = `<option value="">수업 없음</option>`;
+        state.selectedSessionKey = "";
+        return;
+      }
+      if (!sessions.some((session) => session.key === state.selectedSessionKey)) state.selectedSessionKey = sessions[0].key;
+      els.sessionSelect.innerHTML = sessions.map((session) => `<option value="${escapeHtml(session.key)}">${escapeHtml(session.label)}</option>`).join("");
+      els.sessionSelect.value = state.selectedSessionKey;
+    }
+
+    function statusButton(status, current, entry, session) {
+      const item = STATUS.find((option) => option.key === status);
+      return `<button class="status-button ${item.className} ${current === status ? "active" : ""}" type="button" data-status="${status}" data-section="${escapeHtml(entry.label)}" data-student="${escapeHtml(entry.student)}">${item.label}</button>`;
+    }
+
+    function renderAttendance() {
+      const session = selectedSession();
+      const entries = entriesForSession(session);
+      els.attendanceTitle.textContent = `일별 출결 입력 · ${formatDate(state.selectedDate)}`;
+      els.attendanceMeta.textContent = session
+        ? `${session.label} · 김태완 · ${entries.reduce((sum, group) => sum + group.students.length, 0)}명`
+        : "해당 날짜에 김태완 교사의 수업이 없습니다.";
+
+      if (!session) {
+        els.attendanceBody.innerHTML = `<div class="empty-state">평일 날짜를 선택하거나 수업이 있는 날짜를 선택하세요.</div>`;
+        return;
+      }
+      if (!entries.length) {
+        els.attendanceBody.innerHTML = `<div class="empty-state">${escapeHtml(session.label)}은(는) 수강생 명단이 없는 수업입니다.</div>`;
+        return;
+      }
+
+      const flat = entries.flatMap((group) => group.students.map((student) => ({ group, student })));
+      const counts = STATUS.reduce((result, item) => {
+        result[item.key] = flat.filter(({ group, student }) => getStatus({ label: group.label, student }, session) === item.key).length;
+        return result;
+      }, {});
+
+      els.attendanceBody.innerHTML = `
+        <div class="attendance-summary">
+          <div class="summary-item"><span>전체</span><strong>${flat.length}</strong></div>
+          <div class="summary-item"><span>출석</span><strong>${counts["출석"]}</strong></div>
+          <div class="summary-item"><span>지각·조퇴</span><strong>${counts["지각"] + counts["조퇴"]}</strong></div>
+          <div class="summary-item"><span>결석</span><strong>${counts["결석"]}</strong></div>
+        </div>
+        <div class="student-groups">
+          ${entries.map((group) => `
+            <section class="student-group">
+              <h3>${escapeHtml(group.label)} · ${group.students.length}명</h3>
+              ${group.students.map((student) => {
+                const entry = { label: group.label, student };
+                const current = getStatus(entry, session);
+                return `<div class="student-row">
+                  <div class="student-name">${escapeHtml(student)}</div>
+                  <div class="status-buttons">${STATUS.map((item) => statusButton(item.key, current, entry, session)).join("")}</div>
+                </div>`;
+              }).join("")}
+            </section>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function filteredStudents() {
+      const query = normalize(els.studentSearch.value).toLowerCase();
+      return state.students.filter((student) => student.toLowerCase().includes(query));
+    }
+
+    function renderStudentOptions() {
+      const students = filteredStudents();
+      const current = els.studentSelect.value;
+      els.studentSelect.innerHTML = students.length
+        ? students.map((student) => `<option value="${escapeHtml(student)}">${escapeHtml(student)}</option>`).join("")
+        : `<option value="">학생 없음</option>`;
+      if (students.includes(current)) els.studentSelect.value = current;
+    }
+
+    function renderReport() {
+      const student = els.studentSelect.value;
+      if (!student) {
+        els.reportBody.innerHTML = `<div class="empty-state">학생을 선택하면 출결 이력이 표시됩니다.</div>`;
+        return;
+      }
+      const records = Object.values(state.records)
+        .filter((record) => record.student === student)
+        .sort((a, b) => b.date.localeCompare(a.date) || b.period.localeCompare(a.period));
+      const counts = STATUS.reduce((result, item) => {
+        result[item.key] = records.filter((record) => record.status === item.key).length;
+        return result;
+      }, {});
+      const totalMarked = records.filter((record) => record.status !== "미입력").length;
+      const attendanceRate = totalMarked ? Math.round((counts["출석"] / totalMarked) * 100) : 0;
+      els.reportBody.innerHTML = `
+        <div class="report-stats">
+          <div class="report-stat"><span>출석</span><strong>${counts["출석"]}</strong></div>
+          <div class="report-stat"><span>지각</span><strong>${counts["지각"]}</strong></div>
+          <div class="report-stat"><span>결석</span><strong>${counts["결석"]}</strong></div>
+          <div class="report-stat"><span>출석률</span><strong>${attendanceRate}%</strong></div>
+        </div>
+        ${records.length ? `
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead><tr><th>날짜</th><th>수업</th><th>구간</th><th>상태</th></tr></thead>
+              <tbody>${records.map((record) => {
+                const item = STATUS.find((status) => status.key === record.status) || STATUS[0];
+                return `<tr><td>${formatDate(record.date)}</td><td>${escapeHtml(record.sessionLabel)}</td><td>${escapeHtml(record.section)}</td><td class="status-text ${item.className}">${item.label}</td></tr>`;
+              }).join("")}</tbody>
+            </table>
+          </div>
+        ` : `<div class="empty-state">입력된 출결 기록이 없습니다.</div>`}
+      `;
+    }
+
+    function renderAll() {
+      els.dateInput.value = state.selectedDate;
+      renderSessionOptions();
+      renderAttendance();
+      renderStudentOptions();
+      renderReport();
+    }
+
+    function moveDate(days) {
+      const date = localDate(state.selectedDate);
+      date.setDate(date.getDate() + days);
+      state.selectedDate = dateKey(date);
+      state.selectedSessionKey = "";
+      renderAll();
+    }
+
+    function setAllStatus(status) {
+      const session = selectedSession();
+      if (!session) return;
+      entriesForSession(session).forEach((group) => {
+        group.students.forEach((student) => updateRecordOnly({ label: group.label, student }, session, status));
+      });
+      saveRecords();
+      renderAll();
+    }
+
+    function updateRecordOnly(entry, session, status) {
+      const key = recordKey(state.selectedDate, session.key, entry.label, entry.student);
+      if (status === "미입력") {
+        delete state.records[key];
+      } else {
+        state.records[key] = {
+          date: state.selectedDate,
+          sessionKey: session.key,
+          sessionLabel: session.label,
+          day: session.day,
+          period: session.period,
+          section: entry.label,
+          student: entry.student,
+          status,
+          updatedAt: new Date().toISOString()
+        };
+      }
+    }
+
+    function exportCsv() {
+      const session = selectedSession();
+      if (!session) return;
+      const rows = [["날짜", "교시", "수업", "구간", "학생", "출결상태"]];
+      entriesForSession(session).forEach((group) => group.students.forEach((student) => {
+        rows.push([state.selectedDate, session.period, session.label, group.label, student, getStatus({ label: group.label, student }, session)]);
+      }));
+      const csv = rows.map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\r\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `김태완_${state.selectedDate}_${session.period}교시_출결.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function loadData() {
+      els.refreshBtn.disabled = true;
+      setStatus("Google Sheet에서 김태완 교사 시간표와 수강생 명단을 불러오는 중입니다.");
+      try {
+        const [originalTable, enrollTable, ...rosterTables] = await Promise.all([
+          gvizLoad(SHEETS.original),
+          gvizLoad(SHEETS.enroll),
+          ...ROSTER_SHEETS.map((sheetName) => gvizLoad(sheetName))
+        ]);
+        const rosterMap = new Map(ROSTER_SHEETS.map((sheetName, index) => [sheetName, tableRows(rosterTables[index])]));
+        state.roster = buildRosterIndex(rosterMap);
+        state.enroll = buildEnrollment(tableRows(enrollTable));
+        state.teacher = buildTeacher(tableRows(originalTable));
+        if (!state.teacher) throw new Error("원본 시트에서 김태완 교사를 찾지 못했습니다.");
+        state.students = [...new Set(state.teacher.cells.flatMap((cell) => cell.lessons.flatMap((lesson) => lesson.students)))].sort((a, b) => a.localeCompare(b, "ko"));
+        state.loadedAt = new Date();
+        setStatus(`김태완 시간표와 수강생 명단을 불러왔습니다. ${state.loadedAt.toLocaleTimeString("ko-KR")} 기준`);
+        renderAll();
+      } catch (error) {
+        console.error(error);
+        setStatus(`데이터를 불러오지 못했습니다. ${error.message}`, true);
+        els.attendanceBody.innerHTML = `<div class="empty-state">Google Sheet 공유 권한과 탭 이름을 확인하세요.</div>`;
+      } finally {
+        els.refreshBtn.disabled = false;
+      }
+    }
+
+    els.dateInput.addEventListener("change", () => {
+      state.selectedDate = els.dateInput.value || dateKey(new Date());
+      state.selectedSessionKey = "";
+      renderAll();
+    });
+    els.sessionSelect.addEventListener("change", () => {
+      state.selectedSessionKey = els.sessionSelect.value;
+      renderAttendance();
+    });
+    els.studentSearch.addEventListener("input", () => {
+      renderStudentOptions();
+      renderReport();
+    });
+    els.studentSelect.addEventListener("change", renderReport);
+    els.prevDayBtn.addEventListener("click", () => moveDate(-1));
+    els.nextDayBtn.addEventListener("click", () => moveDate(1));
+    els.allPresentBtn.addEventListener("click", () => setAllStatus("출석"));
+    els.clearDayBtn.addEventListener("click", () => setAllStatus("미입력"));
+    els.exportBtn.addEventListener("click", exportCsv);
+    els.refreshBtn.addEventListener("click", loadData);
+    els.printBtn.addEventListener("click", () => window.print());
+    els.attendanceBody.addEventListener("click", (event) => {
+      const button = event.target.closest(".status-button");
+      const session = selectedSession();
+      if (!button || !session) return;
+      updateStatus({ label: button.dataset.section, student: button.dataset.student }, session, button.dataset.status);
+    });
+
+    loadData();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch((error) => console.warn("Service worker registration failed", error));
+      });
+    }
+  </script>
+</body>
+</html>

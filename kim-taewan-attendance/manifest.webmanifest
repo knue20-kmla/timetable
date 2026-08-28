@@ -1,0 +1,26 @@
+{
+  "name": "김태완 교사 출결부",
+  "short_name": "김태완 출결부",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "ko",
+  "background_color": "#f4f7f9",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/Mo4ogKc.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i.imgur.com/Mo4ogKc.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

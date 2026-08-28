@@ -37,3 +37,9 @@ Google Sheet의 `원본(818)`과 `수강현황(818)` 탭을 읽어 교사별 시
 배포 주소:
 
 `https://knue20-kmla.github.io/timetable/`
+
+김태완 전용 출결부:
+
+`https://knue20-kmla.github.io/timetable/kim-taewan-attendance/`
+
+김태완 출결부는 현재 브라우저 `localStorage`를 사용해 같은 기기와 브라우저에 출결을 저장합니다. 날짜·수업별 출결 입력, 전체 출석·초기화, 학생별 출결 조회, CSV 내보내기, 출결부 인쇄를 지원합니다. 여러 기기에서 공유되는 중앙 DB 저장은 별도 서버와 인증 구성이 필요합니다.
