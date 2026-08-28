@@ -326,6 +326,116 @@
       box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.14);
     }
 
+    .timetable-row.active {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.14);
+    }
+
+    .timetable-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .timetable-grid-head {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 132px;
+      gap: 0;
+      padding: 0 14px 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .timetable-row {
+      width: 100%;
+      min-height: 96px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 132px;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .timetable-row:hover {
+      border-color: rgba(15, 118, 110, 0.45);
+      box-shadow: 0 8px 24px rgba(15, 118, 110, 0.1);
+    }
+
+    .timetable-row.empty {
+      opacity: 0.75;
+    }
+
+    .timetable-period {
+      padding: 12px 10px;
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #f8fafc 0, #eef7f4 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .weekday-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 0 9px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .timetable-main {
+      padding: 12px 14px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .timetable-title {
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .timetable-sub {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .timetable-side {
+      padding: 12px 14px;
+      border-left: 1px solid var(--line);
+      background: #fbfdff;
+      display: grid;
+      align-content: center;
+      justify-items: end;
+      gap: 8px;
+    }
+
+    .timetable-side .student-count {
+      justify-self: end;
+    }
+
+    .timetable-side-label {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
     .empty-state {
       padding: 28px 12px;
       color: var(--muted);
@@ -344,6 +454,61 @@
       display: grid;
       align-content: start;
       gap: 9px;
+    }
+
+    .report-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 11px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .tab-button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .report-filter-group {
+      display: grid;
+      gap: 9px;
+    }
+
+    .report-filter-group + .report-filter-group {
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .report-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .report-panel[data-mode="student"] .report-filter-group[data-mode="subject"],
+    .report-panel[data-mode="student"] .report-filter-group[data-mode="date"] {
+      display: none;
+    }
+
+    .report-panel[data-mode="subject"] .report-filter-group[data-mode="student"],
+    .report-panel[data-mode="subject"] .report-filter-group[data-mode="date"] {
+      display: none;
+    }
+
+    .report-panel[data-mode="date"] .report-filter-group[data-mode="student"],
+    .report-panel[data-mode="date"] .report-filter-group[data-mode="subject"] {
+      display: none;
     }
 
     .report-filter label {
@@ -612,6 +777,9 @@
       .session-grid { grid-template-columns: 1fr; }
       .report-grid { grid-template-columns: 1fr; }
       .modal-summary, .report-stats, .attendance-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .timetable-grid-head { display: none; }
+      .timetable-row { grid-template-columns: 82px minmax(0, 1fr); min-height: 0; }
+      .timetable-side { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); justify-items: start; grid-template-columns: auto auto; }
     }
 
     @media (max-width: 480px) {
@@ -643,6 +811,8 @@
       .modal-summary, .report-stats { gap: 5px; }
       .summary-item, .report-stat { padding: 7px 6px; }
       .summary-item strong, .report-stat strong { font-size: 16px; }
+      .timetable-row { grid-template-columns: 72px minmax(0, 1fr); }
+      .timetable-period, .timetable-main, .timetable-side { padding: 9px 10px; }
     }
 
     @media print {
@@ -786,6 +956,11 @@
     const STORAGE_KEY = "kim-taewan-attendance-v2";
     const PLAIN_BLOCK_RE = /^[A-H]+$/;
     const GRADE_BLOCK_RE = /^([1-3](?:,[1-3])?)\/?([A-Za-z][A-Za-z0-9]*)$/;
+    const REPORT_MODES = [
+      { key: "student", label: "학생별" },
+      { key: "date", label: "날짜별" },
+      { key: "subject", label: "과목별" }
+    ];
 
     const state = {
       teacher: null,
@@ -793,8 +968,12 @@
       roster: new Map(),
       records: loadRecords(),
       selectedDate: dateKey(new Date()),
+      reportMode: "student",
+      reportDate: dateKey(new Date()),
+      reportSubject: "",
       currentSession: null,
       students: [],
+      subjects: [],
       loadedAt: null
     };
 
@@ -813,8 +992,12 @@
       selectedWeekdayLabel: document.getElementById("selectedWeekdayLabel"),
       timetableBody: document.getElementById("timetableBody"),
       reportPanel: document.getElementById("reportPanel"),
+      reportTabs: Array.from(document.querySelectorAll("[data-report-mode]")),
       studentSearch: document.getElementById("studentSearch"),
       studentSelect: document.getElementById("studentSelect"),
+      reportDateInput: document.getElementById("reportDateInput"),
+      subjectSearch: document.getElementById("subjectSearch"),
+      subjectSelect: document.getElementById("subjectSelect"),
       reportBody: document.getElementById("reportBody"),
       studentModal: document.getElementById("studentModal"),
       studentModalTitle: document.getElementById("studentModalTitle"),
@@ -848,6 +1031,12 @@
       return normalize(cell?.f ?? cell?.v ?? "");
     }
 
+    function subjectLabel(text) {
+      const value = normalize(text);
+      const match = value.match(/^(.+?)\((.+)\)$/);
+      return match ? normalize(match[2]) : value;
+    }
+
     function dateKey(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -868,6 +1057,84 @@
     function dayName(key) {
       const day = localDate(key).getDay();
       return day >= 1 && day <= 5 ? DAYS[day - 1] : "";
+    }
+
+    function recordSubject(record) {
+      if (record.subject || record.subjectLabel) return normalize(record.subject || record.subjectLabel);
+      const session = state.teacher
+        ? sessionsForDate(record.date).find((item) => item.key === record.sessionKey)
+        : null;
+      return normalize(sessionSubject(session) || record.section || record.sessionLabel || "기타");
+    }
+
+    function sessionSubject(session) {
+      const subjects = [...new Set(session.lessons.map((lesson) => normalize(lesson.subject || subjectLabel(lesson.text) || lesson.text)).filter(Boolean))];
+      return subjects.length === 1 ? subjects[0] : "";
+    }
+
+    function reportCountMap(records) {
+      const counts = { 지각: 0, 결석: 0, 조퇴: 0 };
+      records.forEach((record) => {
+        if (counts[record.status] !== undefined) counts[record.status] += 1;
+      });
+      return counts;
+    }
+
+    function buildReportUI() {
+      els.reportPanel.innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>출결 조회</h2>
+            <p>학생, 날짜, 과목 기준으로 기록을 바로 볼 수 있습니다.</p>
+          </div>
+        </div>
+        <div class="report-grid">
+          <div class="report-filter">
+            <div class="report-tabs">
+              <button class="tab-button active" type="button" data-report-mode="student">학생별</button>
+              <button class="tab-button" type="button" data-report-mode="date">날짜별</button>
+              <button class="tab-button" type="button" data-report-mode="subject">과목별</button>
+            </div>
+            <div class="report-filter-group" data-mode="student">
+              <label class="report-label" for="studentSearch">학생 검색</label>
+              <input id="studentSearch" type="search" placeholder="이름 입력" autocomplete="off">
+              <label class="report-label" for="studentSelect">학생 선택</label>
+              <select id="studentSelect"></select>
+            </div>
+            <div class="report-filter-group" data-mode="date">
+              <label class="report-label" for="reportDateInput">날짜 선택</label>
+              <input id="reportDateInput" type="date">
+            </div>
+            <div class="report-filter-group" data-mode="subject">
+              <label class="report-label" for="subjectSearch">과목 검색</label>
+              <input id="subjectSearch" type="search" placeholder="과목명 입력" autocomplete="off">
+              <label class="report-label" for="subjectSelect">과목 선택</label>
+              <select id="subjectSelect"></select>
+            </div>
+          </div>
+          <div id="reportBody">
+            <div class="empty-state">기준을 선택하면 출결 기록이 표시됩니다.</div>
+          </div>
+        </div>
+      `;
+      els.reportTabs = Array.from(els.reportPanel.querySelectorAll("[data-report-mode]"));
+      els.studentSearch = document.getElementById("studentSearch");
+      els.studentSelect = document.getElementById("studentSelect");
+      els.reportDateInput = document.getElementById("reportDateInput");
+      els.subjectSearch = document.getElementById("subjectSearch");
+      els.subjectSelect = document.getElementById("subjectSelect");
+      els.reportBody = document.getElementById("reportBody");
+      els.reportPanel.dataset.mode = state.reportMode;
+      els.reportDateInput.value = state.reportDate;
+    }
+
+    function setReportMode(mode) {
+      state.reportMode = mode;
+      els.reportPanel.dataset.mode = mode;
+      els.reportTabs.forEach((button) => {
+        button.classList.toggle("active", button.dataset.reportMode === mode);
+      });
+      renderReport();
     }
 
     function loadRecords() {
@@ -1130,6 +1397,7 @@
           date,
           sessionKey: session.key,
           sessionLabel: session.label,
+          subject: sessionSubject(session) || subjectLabel(session.label),
           day: session.dayName,
           period: session.period,
           section,
@@ -1146,6 +1414,7 @@
         const sections = lesson.sections?.length ? lesson.sections : (lesson.students.length ? [{ label: lesson.text, students: lesson.students, source: "수강현황" }] : []);
         return sections.map((section) => ({
           label: section.label || lesson.text,
+          subject: section.subject || lesson.subject || subjectLabel(lesson.text) || section.label || lesson.text,
           students: [...new Set(section.students)].sort((a, b) => a.localeCompare(b, "ko")),
           source: section.source || "수강현황"
         }));
@@ -1187,21 +1456,29 @@
             <button class="button" id="openStudentReportBtn" type="button">학생별 출결 조회</button>
           </div>
         </div>
-        <div class="session-grid">
+        <div class="timetable-grid">
+          <div class="timetable-grid-head">
+            <span>교시</span>
+            <span>수업</span>
+            <span>수강생</span>
+          </div>
           ${sessions.map((session) => {
             const groups = sessionGroups(session);
             const total = groups.reduce((sum, group) => sum + group.students.length, 0);
             const active = state.currentSession && state.currentSession.key === session.key;
+            const marked = groups.reduce((sum, group) => sum + group.students.filter((student) => getStatus(state.selectedDate, session.key, group.label, student)).length, 0);
             return `
-              <button class="session-card ${active ? "active" : ""} ${total ? "" : "empty"}" type="button" data-session-key="${escapeHtml(session.key)}">
-                <div class="session-head">
+              <button class="timetable-row ${active ? "active" : ""} ${total ? "" : "empty"}" type="button" data-session-key="${escapeHtml(session.key)}">
+                <div class="timetable-period">
                   <span class="period-badge">${escapeHtml(session.period)}교시</span>
-                  <span class="session-title">${escapeHtml(session.lessons.map((lesson) => lesson.text).join(" · ") || session.raw)}</span>
+                  <span class="weekday-pill">${escapeHtml(session.dayName)}요일</span>
                 </div>
-                <div class="session-body">
-                  <div class="session-meta">${escapeHtml(session.label)}</div>
-                  <div class="session-meta">${state.teacher.teacher} · 수강인원 ${total}명</div>
-                  ${total ? `<span class="student-count" data-session-key="${escapeHtml(session.key)}">수강생 ${total}명 보기</span>` : `<span class="session-meta">수강생 명단 없음</span>`}
+                <div class="timetable-main">
+                  <div class="timetable-title">${escapeHtml(session.lessons.map((lesson) => lesson.text).join(" · ") || session.raw)}</div>
+                  <div class="timetable-sub">${escapeHtml(session.label)} · ${state.teacher.teacher}</div>
+                </div>
+                <div class="timetable-side">
+                  ${total ? `<span class="student-count">수강생 ${total}명 보기</span><span class="timetable-side-label">${marked ? `출결 ${marked}명 기록` : "출결 미입력"}</span>` : `<span class="session-meta">수강생 명단 없음</span>`}
                 </div>
               </button>
             `;
@@ -1242,7 +1519,7 @@
                     <div class="student-name">${escapeHtml(student)}</div>
                     <div class="status-buttons">
                       ${STATUS.slice(1).map((item) => `
-                        <button class="status-button ${item.className} ${current === item.key ? "active" : ""}" type="button" data-status="${item.key}" data-section="${escapeHtml(group.label)}" data-student="${escapeHtml(student)}">${item.label}</button>
+                        <button class="status-button ${item.className} ${current === item.key ? "active" : ""}" type="button" data-status="${item.key}" data-section="${escapeHtml(group.label)}" data-subject="${escapeHtml(group.subject)}" data-student="${escapeHtml(student)}">${item.label}</button>
                       `).join("")}
                     </div>
                   </div>
@@ -1262,41 +1539,6 @@
       renderTimetable();
     }
 
-    function renderReport() {
-      const student = els.studentSelect.value;
-      if (!student) {
-        els.reportBody.innerHTML = `<div class="empty-state">학생을 선택하면 출결 이력이 표시됩니다.</div>`;
-        return;
-      }
-      const records = Object.values(state.records)
-        .filter((record) => record.student === student)
-        .sort((a, b) => b.date.localeCompare(a.date) || b.period.localeCompare(a.period));
-      const counts = { 지각: 0, 결석: 0, 조퇴: 0 };
-      records.forEach((record) => {
-        if (counts[record.status] !== undefined) counts[record.status] += 1;
-      });
-      const total = records.length;
-      els.reportBody.innerHTML = `
-        <div class="report-stats">
-          <div class="report-stat"><span>지각</span><strong>${counts["지각"]}</strong></div>
-          <div class="report-stat"><span>결석</span><strong>${counts["결석"]}</strong></div>
-          <div class="report-stat"><span>조퇴</span><strong>${counts["조퇴"]}</strong></div>
-          <div class="report-stat"><span>기록</span><strong>${total}</strong></div>
-        </div>
-        ${records.length ? `
-          <div class="report-table-wrap">
-            <table class="report-table">
-              <thead><tr><th>날짜</th><th>수업</th><th>구간</th><th>상태</th></tr></thead>
-              <tbody>${records.map((record) => {
-                const item = STATUS.find((status) => status.key === record.status) || STATUS[0];
-                return `<tr><td>${formatDate(record.date)}</td><td>${escapeHtml(record.sessionLabel)}</td><td>${escapeHtml(record.section)}</td><td class="status-text ${item.className}">${item.label}</td></tr>`;
-              }).join("")}</tbody>
-            </table>
-          </div>
-        ` : `<div class="empty-state">입력된 출결 기록이 없습니다.</div>`}
-      `;
-    }
-
     function renderStudentOptions() {
       const query = normalize(els.studentSearch.value).toLowerCase();
       const current = els.studentSelect.value;
@@ -1305,6 +1547,116 @@
         ? students.map((student) => `<option value="${escapeHtml(student)}">${escapeHtml(student)}</option>`).join("")
         : `<option value="">학생 없음</option>`);
       els.studentSelect.value = students.includes(current) ? current : "";
+    }
+
+    function renderSubjectOptions() {
+      const query = normalize(els.subjectSearch.value).toLowerCase();
+      const current = els.subjectSelect.value;
+      const subjects = state.subjects.filter((subject) => subject.toLowerCase().includes(query));
+      els.subjectSelect.innerHTML = `<option value="">과목 선택</option>` + (subjects.length
+        ? subjects.map((subject) => `<option value="${escapeHtml(subject)}">${escapeHtml(subject)}</option>`).join("")
+        : `<option value="">과목 없음</option>`);
+      els.subjectSelect.value = subjects.includes(current) ? current : "";
+    }
+
+    function reportStats(records) {
+      const counts = reportCountMap(records);
+      return `
+        <div class="report-stats">
+          <div class="report-stat"><span>지각</span><strong>${counts["지각"]}</strong></div>
+          <div class="report-stat"><span>결석</span><strong>${counts["결석"]}</strong></div>
+          <div class="report-stat"><span>조퇴</span><strong>${counts["조퇴"]}</strong></div>
+          <div class="report-stat"><span>기록</span><strong>${records.length}</strong></div>
+        </div>
+      `;
+    }
+
+    function reportRows(records, columns) {
+      return records.map((record) => {
+        const item = STATUS.find((status) => status.key === record.status) || STATUS[0];
+        const values = columns.map((column) => {
+          if (column.key === "date") return formatDate(record.date);
+          if (column.key === "session") return record.sessionLabel;
+          if (column.key === "subject") return recordSubject(record);
+          if (column.key === "section") return record.section;
+          if (column.key === "student") return record.student;
+          if (column.key === "status") return `<span class="status-text ${item.className}">${item.label}</span>`;
+          return "";
+        });
+        return `<tr>${values.map((value) => `<td>${value === `<span class="status-text ${item.className}">${item.label}</span>` ? value : escapeHtml(value)}</td>`).join("")}</tr>`;
+      }).join("");
+    }
+
+    function renderReportTable(records, columns, emptyMessage) {
+      if (!records.length) return `<div class="empty-state">${emptyMessage}</div>`;
+      return `
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <thead><tr>${columns.map((column) => `<th>${column.label}</th>`).join("")}</tr></thead>
+            <tbody>${reportRows(records, columns)}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderReport() {
+      if (!els.reportBody) return;
+      if (state.reportMode === "date") {
+        const date = els.reportDateInput?.value || state.reportDate;
+        state.reportDate = date;
+        const records = Object.values(state.records)
+          .filter((record) => record.date === date)
+          .sort((a, b) => a.period.localeCompare(b.period) || a.student.localeCompare(b.student, "ko"));
+        els.reportBody.innerHTML = `
+          ${reportStats(records)}
+          ${renderReportTable(records, [
+            { key: "session", label: "수업" },
+            { key: "subject", label: "과목" },
+            { key: "student", label: "학생" },
+            { key: "status", label: "상태" }
+          ], `${formatDate(date)}에 입력된 출결 기록이 없습니다.`)}
+        `;
+        return;
+      }
+
+      if (state.reportMode === "subject") {
+        const subject = els.subjectSelect?.value || "";
+        if (!subject) {
+          els.reportBody.innerHTML = `<div class="empty-state">과목을 선택하면 과목별 출결 이력이 표시됩니다.</div>`;
+          return;
+        }
+        const records = Object.values(state.records)
+          .filter((record) => recordSubject(record) === subject)
+          .sort((a, b) => b.date.localeCompare(a.date) || a.student.localeCompare(b.student, "ko"));
+        els.reportBody.innerHTML = `
+          ${reportStats(records)}
+          ${renderReportTable(records, [
+            { key: "date", label: "날짜" },
+            { key: "session", label: "수업" },
+            { key: "student", label: "학생" },
+            { key: "status", label: "상태" }
+          ], "입력된 과목별 출결 기록이 없습니다.")}
+        `;
+        return;
+      }
+
+      const student = els.studentSelect?.value || "";
+      if (!student) {
+        els.reportBody.innerHTML = `<div class="empty-state">학생을 선택하면 출결 이력이 표시됩니다.</div>`;
+        return;
+      }
+      const records = Object.values(state.records)
+        .filter((record) => record.student === student)
+        .sort((a, b) => b.date.localeCompare(a.date) || b.period.localeCompare(a.period));
+      els.reportBody.innerHTML = `
+        ${reportStats(records)}
+        ${renderReportTable(records, [
+          { key: "date", label: "날짜" },
+          { key: "session", label: "수업" },
+          { key: "subject", label: "과목" },
+          { key: "status", label: "상태" }
+        ], "입력된 출결 기록이 없습니다.")}
+      `;
     }
 
     function updateStatus(entry, session, status) {
@@ -1317,6 +1669,7 @@
           date: state.selectedDate,
           sessionKey: session.key,
           sessionLabel: session.label,
+          subject: entry.subject || sessionSubject(session) || subjectLabel(session.label),
           day: session.dayName,
           period: session.period,
           section: entry.section,
@@ -1385,10 +1738,16 @@
         state.teacher = buildTeacher(tableRows(originalTable));
         if (!state.teacher) throw new Error("원본 시트에서 김태완 교사를 찾지 못했습니다.");
         state.students = [...new Set(state.teacher.cells.flatMap((cell) => cell.lessons.flatMap((lesson) => lesson.students)))].sort((a, b) => a.localeCompare(b, "ko"));
+        state.subjects = [...new Set([
+          ...state.teacher.cells.flatMap((cell) => cell.lessons.map((lesson) => lesson.subject || subjectLabel(lesson.text))),
+          ...Object.values(state.records).map((record) => recordSubject(record))
+        ].map(normalize).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ko"));
         state.loadedAt = new Date();
         setStatus(`김태완 시간표와 수강생 명단을 불러왔습니다. ${state.loadedAt.toLocaleTimeString("ko-KR")} 기준`);
+        buildReportUI();
         renderTimetable();
         renderStudentOptions();
+        renderSubjectOptions();
         renderReport();
       } catch (error) {
         console.error(error);
@@ -1409,11 +1768,29 @@
     els.nextDayBtn.addEventListener("click", () => moveDate(1));
     els.reportBtn.addEventListener("click", () => els.reportPanel.scrollIntoView({ behavior: "smooth", block: "start" }));
     els.reportJumpBtn.addEventListener("click", () => els.reportPanel.scrollIntoView({ behavior: "smooth", block: "start" }));
-    els.studentSearch.addEventListener("input", () => {
-      renderStudentOptions();
-      renderReport();
+    document.addEventListener("click", (event) => {
+      const tab = event.target.closest("[data-report-mode]");
+      if (!tab) return;
+      setReportMode(tab.dataset.reportMode);
     });
-    els.studentSelect.addEventListener("change", renderReport);
+    document.addEventListener("input", (event) => {
+      if (event.target === els.studentSearch) {
+        renderStudentOptions();
+        renderReport();
+      }
+      if (event.target === els.subjectSearch) {
+        renderSubjectOptions();
+        renderReport();
+      }
+      if (event.target === els.reportDateInput) {
+        state.reportDate = event.target.value || dateKey(new Date());
+        renderReport();
+      }
+    });
+    document.addEventListener("change", (event) => {
+      if (event.target === els.studentSelect) renderReport();
+      if (event.target === els.subjectSelect) renderReport();
+    });
     els.refreshBtn.addEventListener("click", loadData);
     els.printBtn.addEventListener("click", () => window.print());
     els.studentModalClose.addEventListener("click", closeModal);
@@ -1432,12 +1809,13 @@
       const button = event.target.closest(".status-button");
       if (!button || !state.currentSession) return;
       updateStatus(
-        { section: button.dataset.section, student: button.dataset.student },
+        { section: button.dataset.section, subject: button.dataset.subject, student: button.dataset.student },
         state.currentSession,
         button.dataset.status
       );
     });
 
+    buildReportUI();
     renderTimetable();
     loadData();
 
