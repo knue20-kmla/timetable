@@ -1161,6 +1161,15 @@
       }
     }
 
+    const DELETED_KEY = "minjok-schedule.att-deleted.v1";
+    function markRecordDeleted(key) {
+      try {
+        const map = JSON.parse(localStorage.getItem(DELETED_KEY) || "{}");
+        map[key] = Date.now();
+        localStorage.setItem(DELETED_KEY, JSON.stringify(map));
+      } catch { /* optional */ }
+    }
+
     function recognitionLabel(record) {
       return record.recognition ? `${record.recognition} ${record.status}` : record.status;
     }
@@ -1677,10 +1686,13 @@
     }
 
     function updateStatus(entry, session, status) {
+      // pick up changes that arrived meanwhile (e.g. synced from another device) before applying this one
+      state.records = loadRecords();
       const key = recordKey(state.selectedDate, session.key, entry.section, entry.student);
       const existing = getRecord(state.selectedDate, session.key, entry.section, entry.student);
       if (existing && existing.status === status && existing.recognition === state.recognition) {
         delete state.records[key];
+        markRecordDeleted(key);
       } else {
         state.records[key] = {
           date: state.selectedDate,
@@ -1838,6 +1850,17 @@
         state.currentSession,
         button.dataset.status
       );
+    });
+
+    // coming back to the app: show records that were synced into this browser in the meantime
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState !== "visible") return;
+      state.records = loadRecords();
+      try {
+        renderTimetable();
+        renderReport();
+        if (state.currentSession && els.studentModal.classList.contains("visible")) renderStudentModal(state.currentSession);
+      } catch (error) { console.warn("refresh after returning failed", error); }
     });
 
     buildReportUI();
