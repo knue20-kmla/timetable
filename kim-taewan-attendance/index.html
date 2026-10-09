@@ -742,6 +742,17 @@
     .status-button.active.late { border-color: #d97706; background: #fef3c7; color: #92400e; }
     .status-button.active.absent { border-color: #e11d48; background: #ffe4e6; color: #9f1239; }
     .status-button.active.leave { border-color: #7c3aed; background: #ede9fe; color: #5b21b6; }
+    .recognition-bar { display: flex; align-items: center; gap: 6px; margin: 10px 0 4px; padding: 5px; border-radius: 12px; background: #e8eef0; }
+    .recognition-label { padding: 0 8px; color: #475569; font-size: 12px; font-weight: 800; }
+    .recognition-button { flex: 1; min-height: 38px; border: 0; border-radius: 9px; background: transparent; color: #475569; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .recognition-button.active { background: #fff; box-shadow: 0 1px 4px rgba(15, 23, 42, .2); }
+    .recognition-button.active.no { color: #9f1239; box-shadow: 0 1px 4px rgba(15, 23, 42, .2), inset 0 -3px 0 #e11d48; }
+    .recognition-button.active.yes { color: #1d4ed8; box-shadow: 0 1px 4px rgba(15, 23, 42, .2), inset 0 -3px 0 #3b82f6; }
+    .recognition-hint { margin: 2px 2px 8px; color: #64748b; font-size: 12px; text-align: center; }
+    .recognition-summary { margin: 6px 0; color: #475569; font-size: 12px; text-align: center; }
+    .recognition-tag { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 5px; background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 800; vertical-align: middle; }
+    .recognition-tag.no { background: #ffe4e6; color: #9f1239; }
+    .recognition-tag.yes { background: #dbeafe; color: #1d4ed8; }
 
     .loading {
       min-height: 100px;
@@ -943,6 +954,8 @@
     ];
     const FIXED_LESSONS = new Map([["월|1", "애국조회/학급회의"]]);
     const STORAGE_KEY = "kim-taewan-attendance-v2";
+    const RECOGNITION_KEY = "kim-taewan-recognition-mode";
+    const RECOGNITIONS = ["미인정", "인정"];
     const PLAIN_BLOCK_RE = /^[A-H]+$/;
     const GRADE_BLOCK_RE = /^([1-3](?:,[1-3])?)\/?([A-Za-z][A-Za-z0-9]*)$/;
     const REPORT_MODES = [
@@ -956,6 +969,7 @@
       enroll: new Map(),
       roster: new Map(),
       records: loadRecords(),
+      recognition: loadRecognition(),
       selectedDate: dateKey(new Date()),
       reportMode: "student",
       reportDate: dateKey(new Date()),
@@ -1136,6 +1150,19 @@
 
     function saveRecords() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.records));
+    }
+
+    // 인정 / 미인정 is saved next to the status (status itself stays 지각/결석/조퇴).
+    function loadRecognition() {
+      try {
+        return localStorage.getItem(RECOGNITION_KEY) === "인정" ? "인정" : "미인정";
+      } catch {
+        return "미인정";
+      }
+    }
+
+    function recognitionLabel(record) {
+      return record.recognition ? `${record.recognition} ${record.status}` : record.status;
     }
 
     function setStatus(message, error = false) {
@@ -1468,9 +1495,14 @@
       const groups = sessionGroups(session);
       const total = groups.reduce((sum, group) => sum + group.students.length, 0);
       const counts = { 지각: 0, 결석: 0, 조퇴: 0 };
+      const recognitionCounts = { 미인정: 0, 인정: 0 };
       groups.forEach((group) => group.students.forEach((student) => {
-        const status = getStatus(state.selectedDate, session.key, group.label, student);
-        if (counts[status] !== undefined) counts[status] += 1;
+        const record = getRecord(state.selectedDate, session.key, group.label, student);
+        const status = record?.status || "";
+        if (counts[status] !== undefined) {
+          counts[status] += 1;
+          if (recognitionCounts[record.recognition] !== undefined) recognitionCounts[record.recognition] += 1;
+        }
       }));
 
       els.studentModalTitle.textContent = formatSessionTitle(session);
@@ -1482,15 +1514,22 @@
           <div class="summary-item"><span>결석</span><strong>${counts["결석"]}</strong></div>
           <div class="summary-item"><span>조퇴</span><strong>${counts["조퇴"]}</strong></div>
         </div>
+        ${counts["지각"] + counts["결석"] + counts["조퇴"] ? `<p class="recognition-summary">미인정 ${recognitionCounts["미인정"]}명 · 인정 ${recognitionCounts["인정"]}명</p>` : ""}
+        <div class="recognition-bar" role="group" aria-label="인정 구분">
+          <span class="recognition-label">구분</span>
+          ${RECOGNITIONS.map((item) => `<button class="recognition-button ${item === "인정" ? "yes" : "no"} ${state.recognition === item ? "active" : ""}" type="button" data-recognition="${item}">${item}</button>`).join("")}
+        </div>
+        <p class="recognition-hint">먼저 구분을 고르고 지각·결석·조퇴를 누르면 "${state.recognition} 결석"처럼 저장됩니다.</p>
         <div class="student-groups">
           ${groups.map((group) => `
             <section class="student-group">
               <h3>${escapeHtml(group.label)} · ${group.students.length}명</h3>
               ${group.students.map((student) => {
-                const current = getStatus(state.selectedDate, session.key, group.label, student);
+                const record = getRecord(state.selectedDate, session.key, group.label, student);
+                const current = record?.status || "";
                 return `
                   <div class="student-row">
-                    <div class="student-name">${escapeHtml(student)}</div>
+                    <div class="student-name">${escapeHtml(student)}${current ? `<span class="recognition-tag ${record.recognition === "인정" ? "yes" : record.recognition === "미인정" ? "no" : ""}">${escapeHtml(recognitionLabel(record))}</span>` : ""}</div>
                     <div class="status-buttons">
                       ${STATUS.slice(1).map((item) => `
                         <button class="status-button ${item.className} ${current === item.key ? "active" : ""}" type="button" data-status="${item.key}" data-section="${escapeHtml(group.label)}" data-subject="${escapeHtml(group.subject)}" data-student="${escapeHtml(student)}">${item.label}</button>
@@ -1535,6 +1574,8 @@
 
     function reportStats(records) {
       const counts = reportCountMap(records);
+      const unrecognized = records.filter((record) => record.recognition === "미인정").length;
+      const recognized = records.filter((record) => record.recognition === "인정").length;
       return `
         <div class="report-stats">
           <div class="report-stat"><span>지각</span><strong>${counts["지각"]}</strong></div>
@@ -1542,22 +1583,24 @@
           <div class="report-stat"><span>조퇴</span><strong>${counts["조퇴"]}</strong></div>
           <div class="report-stat"><span>기록</span><strong>${records.length}</strong></div>
         </div>
+        ${unrecognized + recognized ? `<p class="recognition-summary">미인정 ${unrecognized}건 · 인정 ${recognized}건</p>` : ""}
       `;
     }
 
     function reportRows(records, columns) {
       return records.map((record) => {
         const item = STATUS.find((status) => status.key === record.status) || STATUS[0];
+        const statusHtml = `<span class="status-text ${item.className}">${escapeHtml(recognitionLabel(record))}</span>`;
         const values = columns.map((column) => {
           if (column.key === "date") return formatDate(record.date);
           if (column.key === "session") return record.sessionLabel;
           if (column.key === "subject") return recordSubject(record);
           if (column.key === "section") return record.section;
           if (column.key === "student") return record.student;
-          if (column.key === "status") return `<span class="status-text ${item.className}">${item.label}</span>`;
+          if (column.key === "status") return statusHtml;
           return "";
         });
-        return `<tr>${values.map((value) => `<td>${value === `<span class="status-text ${item.className}">${item.label}</span>` ? value : escapeHtml(value)}</td>`).join("")}</tr>`;
+        return `<tr>${values.map((value) => `<td>${value === statusHtml ? value : escapeHtml(value)}</td>`).join("")}</tr>`;
       }).join("");
     }
 
@@ -1635,8 +1678,8 @@
 
     function updateStatus(entry, session, status) {
       const key = recordKey(state.selectedDate, session.key, entry.section, entry.student);
-      const current = getRecord(state.selectedDate, session.key, entry.section, entry.student)?.status || "";
-      if (current === status) {
+      const existing = getRecord(state.selectedDate, session.key, entry.section, entry.student);
+      if (existing && existing.status === status && existing.recognition === state.recognition) {
         delete state.records[key];
       } else {
         state.records[key] = {
@@ -1649,6 +1692,7 @@
           section: entry.section,
           student: entry.student,
           status,
+          recognition: state.recognition,
           updatedAt: new Date().toISOString()
         };
       }
@@ -1683,9 +1727,9 @@
       const session = selectedSession();
       if (!session) return;
       const groups = sessionGroups(session);
-      const rows = [["날짜", "교시", "수업", "구간", "학생", "상태"]];
+      const rows = [["날짜", "교시", "수업", "구간", "학생", "상태", "인정구분"]];
       groups.forEach((group) => group.students.forEach((student) => {
-        rows.push([state.selectedDate, session.period, session.label, group.label, student, getStatus(state.selectedDate, session.key, group.label, student) || "미입력"]);
+        rows.push([state.selectedDate, session.period, session.label, group.label, student, getStatus(state.selectedDate, session.key, group.label, student) || "미입력", getRecord(state.selectedDate, session.key, group.label, student)?.recognition || ""]);
       }));
       const csv = rows.map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\r\n");
       const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
@@ -1780,6 +1824,13 @@
       openSession(target.dataset.sessionKey);
     });
     els.studentModalBody.addEventListener("click", (event) => {
+      const mode = event.target.closest(".recognition-button");
+      if (mode && state.currentSession) {
+        state.recognition = mode.dataset.recognition;
+        try { localStorage.setItem(RECOGNITION_KEY, state.recognition); } catch { /* optional */ }
+        renderStudentModal(state.currentSession);
+        return;
+      }
       const button = event.target.closest(".status-button");
       if (!button || !state.currentSession) return;
       updateStatus(
