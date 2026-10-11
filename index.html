@@ -1025,10 +1025,18 @@
   .side { top: 84px; height: calc(100vh - 84px); padding-top: 16px; }
 }
 @media screen and (max-width: 860px) {
-  .ws-top { position: static; height: auto; min-height: 0; padding: 10px 12px; flex-wrap: wrap; }
-  .ws-brand .school-mark { width: 44px; height: 44px; }
-  .ws-brand h1 { font-size: 20px; }
-  .ws-top .toolbar { width: 100%; justify-content: flex-end; }
+  .ws-top { position: static; height: auto; min-height: 0; padding: 8px 12px; gap: 8px; flex-wrap: nowrap; }
+  .ws-brand { flex: 1 1 auto; gap: 10px; }
+  .ws-brand .brand-copy { min-width: 0; }
+  .ws-brand .school-mark { width: 38px; height: 38px; }
+  .ws-brand h1 { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ws-brand .subtitle { margin-top: 2px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ws-top .toolbar { width: auto; flex: 0 0 auto; flex-wrap: nowrap; gap: 4px; }
+  .ws-top .button.icon-only { width: 30px; min-height: 30px; height: 30px; border-radius: 8px; }
+  .ws-top .button .icon { width: 15px; height: 15px; }
+  .side .calendar-panel { background: rgba(43, 179, 163, 0.18); border-color: rgba(43, 179, 163, 0.4); }
+  .side .calendar-toggle { flex: 1 1 auto; }
+  .side .calendar-actions { flex: 0 0 auto; }
   .app-shell { min-height: 0; }
   .side { top: auto; height: auto; }
 }
