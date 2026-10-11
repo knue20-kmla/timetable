@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0f766e">
+  <meta name="theme-color" content="#fffefc">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="교사 시간표">
@@ -941,24 +941,110 @@
         font-size: 10px;
       }
     }
+  
+    /* ===== Layout: 전체 폭 헤더 + 왼쪽 사이드바 ===== */
+    :root {
+  --side-bg: radial-gradient(260px 200px at 50% 0%, rgba(255,255,255,.07) 0%, transparent 65%), radial-gradient(520px 560px at 50% 100%, rgba(45,184,168,.38) 0%, transparent 60%), linear-gradient(180deg, #1c2536 0%, #151c26 45%, #10151e 100%);
+  --side-line: rgba(255,255,255,.07); --side-text: rgba(255,255,255,.8); --side-strong: #fff; --side-muted: rgba(255,255,255,.5);
+  --side-field: rgba(255,255,255,.07); --side-field-line: rgba(255,255,255,.16);
+}
+
+
+@media screen {
+  .app-shell { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: 100vh; }
+  .side { position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 18px 14px 16px; background: var(--side-bg); color: var(--side-text); border-right: 1px solid var(--side-line); }
+  .side-brand { display: flex; align-items: center; gap: 10px; padding: 2px 4px 10px; }
+  .side-brand .school-mark { width: 44px; height: 44px; }
+  .side-brand b { display: block; font-size: 15px; font-weight: 900; letter-spacing: -0.01em; color: var(--side-strong); line-height: 1.2; }
+  .side-brand small { display: block; margin-top: 2px; font-size: 11px; font-weight: 600; color: var(--side-muted); }
+  .rail-label { margin: 8px 6px 0; font-size: 9px; font-weight: 800; letter-spacing: 0.18em; color: var(--side-muted); }
+  .side .controls { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+  .side .field { height: 40px; background: var(--side-field); border-color: var(--side-field-line); color: var(--side-strong); }
+  .side .field input, .side .field select { color: var(--side-strong); }
+  .side .calendar-head { flex-wrap: wrap; }
+  .side .calendar-toggle { flex: 1 1 100%; }
+  .side .calendar-actions { flex: 1 1 100%; justify-content: flex-end; }
+  .side .calendar-title { white-space: nowrap; }
+  .side .field .icon { color: var(--side-muted); }
+  .side .field input::placeholder { color: var(--side-muted); }
+  .side .field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,184,168,.22); }
+  .side .field select option { color: #293440; background: #fff; }
+  .side .calendar-panel { background: var(--side-field); border-color: var(--side-field-line); box-shadow: none; padding: 10px; border-radius: 14px; }
+  .side .calendar-toggle { color: var(--side-strong); }
+  .side .calendar-title { font-size: 14px; }
+  .side .calendar-button { background: transparent; border-color: var(--side-field-line); color: var(--side-strong); width: 30px; height: 30px; }
+  .side .calendar-button.today-button { width: auto; }
+  .side .calendar-button:hover { background: rgba(45,184,168,.2); color: var(--side-strong); border-color: var(--accent); }
+  .side .calendar-weekday { color: var(--side-muted); }
+  .side .calendar-grid { gap: 2px; }
+  .side .calendar-day { min-height: 30px; font-size: 12px; color: var(--side-strong); }
+  .side .calendar-day.other-month { color: var(--side-muted); opacity: .6; }
+  .side .calendar-day:hover { background: rgba(45,184,168,.2); }
+  .side .calendar-day.today { border-color: var(--accent); color: var(--side-strong); }
+  .side .calendar-day.sunday { color: #ff8a80; }
+  .side .calendar-day.selected { background: linear-gradient(135deg, #3cc4b3, #14958a); color: #fff; box-shadow: 0 4px 12px -2px rgba(45,184,168,.45); }
+  .side-foot { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--side-line); font-size: 11px; color: var(--side-muted); font-weight: 600; line-height: 1.5; }
+  .app-main { min-width: 0; }
+  .app-main main { width: auto; max-width: 1240px; margin: 0 auto; padding: 22px clamp(18px, 3vw, 34px) 42px; display: grid; gap: 16px; }
+}
+@media screen and (max-width: 860px) {
+  .app-shell { display: block; }
+  .side { position: static; height: auto; overflow: visible; padding: 12px 12px 14px; }
+  .side-foot { display: none; }
+  .app-main main { width: auto; padding: 12px 10px 24px; }
+  .side .field { height: 38px; }
+  .side .controls { display: grid; grid-template-columns: 1fr 1fr; }
+  .side .controls .field:nth-child(-n+3) { grid-column: 1 / -1; }
+}
+@media print {
+  .side { display: none !important; }
+  .app-shell { display: block; }
+  .app-main main { padding: 0; }
+}
+
+@media screen { .side { --accent: #2bb3a3; --accent-soft: rgba(45,184,168,.2); --accent-ink: #7fe0d3; } }
+
+@media screen {
+  th.selected-day { background: #0f766e; box-shadow: inset 0 -4px 0 #0a4f49; }
+  td.selected-day { background: #e1f3f0; box-shadow: inset 3px 0 0 #0f766e, inset -3px 0 0 #0f766e; }
+  td.selected-day .lesson:not(.empty) { border: 2px solid #0f766e; background: linear-gradient(180deg, #ffffff, #f0fbf9); box-shadow: 0 3px 0 rgba(15,118,110,.2), inset 0 1px 0 rgba(255,255,255,.9); }
+  td.selected-day .lesson.empty { color: #0f766e; }
+  .day-card.selected-day-card { border: 2px solid #0f766e; background: #f0fbf9; box-shadow: 0 12px 34px rgba(15,118,110,.2); }
+  .day-card.selected-day-card .day-title { background: #0f766e; }
+  .day-card.selected-day-card .lesson:not(.empty) { border: 2px solid #0f766e; background: linear-gradient(180deg, #ffffff, #f0fbf9); }
+  .app-main main { padding-top: 18px; }
+}
+
+@media screen {
+  .ws-top { position: sticky; top: 0; z-index: 50; height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; background: #fffefc; border-bottom: 1px solid var(--line); }
+  .ws-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .ws-brand .school-mark { width: 54px; height: 54px; }
+  .ws-brand h1 { font-size: clamp(20px, 2.4vw, 28px); color: #182230; }
+  .ws-brand .subtitle { margin-top: 5px; color: var(--muted); }
+  .app-shell { min-height: calc(100vh - 84px); }
+  .side { top: 84px; height: calc(100vh - 84px); padding-top: 16px; }
+}
+@media screen and (max-width: 860px) {
+  .ws-top { position: static; height: auto; min-height: 0; padding: 10px 12px; flex-wrap: wrap; }
+  .ws-brand .school-mark { width: 44px; height: 44px; }
+  .ws-brand h1 { font-size: 20px; }
+  .ws-top .toolbar { width: 100%; justify-content: flex-end; }
+  .app-shell { min-height: 0; }
+  .side { top: auto; height: auto; }
+}
+@media print {
+  .ws-top { display: flex; position: static; height: auto; padding: 0 0 8px; border-bottom: 1px solid #cbd5e1; background: #fff; }
+  .ws-top .toolbar { display: none !important; }
+}
+
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand-lockup">
-        <button class="brand-home" id="brandHomeBtn" type="button" title="홈" aria-label="홈으로 이동">
+  
+
+  <header class="ws-top"><div class="ws-brand"><button class="brand-home" id="brandHomeBtn" type="button" title="홈" aria-label="홈으로 이동">
           <img class="school-mark" src="https://i.imgur.com/Mo4ogKc.png" alt="학교 마크">
-        </button>
-        <div class="brand-copy">
-          <h1 id="title">2026-2학기 교사 시간표</h1>
-          <p class="subtitle" id="subtitle">Google Sheet 원본/수강현황 기준</p>
-        </div>
-      </div>
-      <div class="toolbar">
-        <a class="button icon-only" href="./kim-taewan-attendance/" title="김태완 출결부" aria-label="김태완 출결부">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h3"/></svg>
-        </a>
+        </button><div class="brand-copy"><h1 id="title">2026-2학기 교사 시간표</h1><p class="subtitle" id="subtitle">Google Sheet 원본/수강현황 기준</p></div></div><div class="toolbar">
         <button class="button icon-only" id="homeBtn" type="button" title="홈" aria-label="홈">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
         </button>
@@ -968,11 +1054,10 @@
         <button class="button icon-only" id="printBtn" type="button" title="인쇄" aria-label="인쇄">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
         </button>
-      </div>
-    </div>
-  </header>
-
-  <main>
+      </div></header>
+<div class="app-shell">
+  <aside class="side">
+        <div class="rail-label">TEACHER</div>
     <section class="controls" aria-label="조회 조건">
       <label class="field">
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -995,10 +1080,10 @@
         <select id="periodFilter" aria-label="교시 선택"></select>
       </label>
     </section>
-
-    <section class="calendar-panel is-collapsed" id="calendarPanel" aria-label="달력">
+    <div class="rail-label">CALENDAR</div>
+    <section class="calendar-panel" id="calendarPanel" aria-label="달력">
       <div class="calendar-head">
-        <button class="calendar-toggle" id="calendarToggleBtn" type="button" aria-expanded="false" aria-controls="calendarBody">
+        <button class="calendar-toggle" id="calendarToggleBtn" type="button" aria-expanded="true" aria-controls="calendarBody">
           <span class="calendar-title" id="calendarTitle">2026년 2월</span>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
@@ -1018,6 +1103,13 @@
         </div>
       </div>
     </section>
+    <div class="side-foot">Google Sheet 원본 · 수강현황 기준</div>
+  </aside>
+  <div class="app-main">
+<main>
+    
+
+    
 
     <div class="status visible" id="statusBox">
       <span class="spinner" id="spinner" aria-hidden="true"></span>
@@ -1033,6 +1125,7 @@
 
     <section class="mobile-list" id="mobileList" aria-label="요일별 시간표"></section>
   </main>
+  </div></div>
 
   <div class="modal-backdrop" id="studentModal" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
     <div class="modal">
@@ -1584,6 +1677,10 @@
       els.calendarToggleBtn.setAttribute("aria-expanded", String(!collapsed));
     }
 
+    function autoCollapseCalendar() {
+      if (window.matchMedia("(max-width: 860px)").matches) setCalendarCollapsed(true);
+    }
+
     function moveSelectedDate(days) {
       const nextDate = new Date(state.selectedDate);
       nextDate.setDate(nextDate.getDate() + days);
@@ -1605,7 +1702,7 @@
       updateTeacherOptions();
       renderCalendar();
       render();
-      setCalendarCollapsed(true);
+      autoCollapseCalendar();
       closeStudentModal();
     }
 
@@ -1759,6 +1856,7 @@
     }
 
     function render() {
+      if (els.dayFilter.value) els.dayFilter.value = selectedScheduleDay();
       const teacher = selectedTeacherData();
       const activeDay = selectedScheduleDay();
       if (!teacher) {
@@ -1835,7 +1933,17 @@
       render();
     });
     els.searchInput.addEventListener("input", render);
-    els.dayFilter.addEventListener("change", render);
+    els.dayFilter.addEventListener("change", () => {
+      const index = DAYS.indexOf(els.dayFilter.value);
+      if (index >= 0) {
+        const next = new Date(state.selectedDate);
+        next.setDate(next.getDate() - next.getDay() + index + 1);
+        state.selectedDate = next;
+        state.calendarMonth = new Date(next.getFullYear(), next.getMonth(), 1);
+        renderCalendar();
+      }
+      render();
+    });
     els.periodFilter.addEventListener("change", render);
     els.brandHomeBtn.addEventListener("click", goHome);
     els.homeBtn.addEventListener("click", goHome);
@@ -1849,8 +1957,9 @@
       state.calendarMonth = new Date(year, month - 1, 1);
       renderCalendar();
       render();
-      setCalendarCollapsed(true);
+      autoCollapseCalendar();
     });
+    if (window.matchMedia("(max-width: 860px)").matches) setCalendarCollapsed(true);
     els.calendarToggleBtn.addEventListener("click", () => {
       setCalendarCollapsed(!els.calendarPanel.classList.contains("is-collapsed"));
     });
@@ -1866,7 +1975,7 @@
       state.calendarMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       renderCalendar();
       render();
-      setCalendarCollapsed(true);
+      autoCollapseCalendar();
     });
     document.addEventListener("click", (event) => {
       const button = event.target.closest(".student-button");
